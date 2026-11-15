@@ -1,0 +1,118 @@
+/* Color Chart for WooCommerce – table on desktop, card grid on mobile. */
+.wcc {
+	--wcc-gap: .75rem;
+	--wcc-swatch: 2.25rem;
+	--wcc-border: rgba(0, 0, 0, .12);
+	--wcc-accent: currentColor;
+	margin: 2rem 0;
+	clear: both;
+}
+.wcc-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--wcc-gap);
+	align-items: center;
+	margin-bottom: var(--wcc-gap);
+}
+.wcc-search input { min-width: 14rem; }
+.wcc-sort { display: inline-flex; gap: .4rem; align-items: center; }
+.wcc-families { display: flex; flex-wrap: wrap; gap: .4rem; width: 100%; }
+.wcc-family {
+	border: 1px solid var(--wcc-border);
+	background: transparent;
+	color: inherit;
+	border-radius: 999px;
+	padding: .3rem .8rem;
+	font-size: .875em;
+	cursor: pointer;
+	line-height: 1.4;
+}
+.wcc-family::before {
+	content: "";
+	display: inline-block;
+	width: .7em;
+	height: .7em;
+	border-radius: 50%;
+	margin-right: .4em;
+	vertical-align: -.05em;
+	background: var(--wcc-fam, transparent);
+	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .2);
+}
+.wcc-family[data-wcc-family=""]::before { display: none; }
+.wcc-family.is-active { background: #111; color: #fff; border-color: #111; }
+.wcc-family--red { --wcc-fam: #d62828; }
+.wcc-family--orange { --wcc-fam: #f77f00; }
+.wcc-family--yellow { --wcc-fam: #fcbf49; }
+.wcc-family--green { --wcc-fam: #2a9d8f; }
+.wcc-family--turquoise { --wcc-fam: #00b4d8; }
+.wcc-family--blue { --wcc-fam: #1d4ed8; }
+.wcc-family--violet { --wcc-fam: #7b2cbf; }
+.wcc-family--pink { --wcc-fam: #f472b6; }
+.wcc-family--brown { --wcc-fam: #7f5539; }
+.wcc-family--grey { --wcc-fam: #9ca3af; }
+.wcc-family--black { --wcc-fam: #111; }
+.wcc-family--white { --wcc-fam: #fff; }
+
+.wcc-table { width: 100%; border-collapse: collapse; }
+.wcc-table th, .wcc-table td {
+	padding: .5rem;
+	border-bottom: 1px solid var(--wcc-border);
+	text-align: left;
+	vertical-align: middle;
+}
+.wcc-col-swatch { width: calc(var(--wcc-swatch) + 1rem); }
+.wcc-swatch {
+	display: block;
+	width: var(--wcc-swatch);
+	height: var(--wcc-swatch);
+	border-radius: .4rem;
+	box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .15);
+}
+.wcc-swatch--empty {
+	background: repeating-linear-gradient(45deg, #eee 0 6px, #fff 6px 12px);
+}
+.wcc-col-sku { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9em; }
+.wcc-stock::before {
+	content: "";
+	display: inline-block;
+	width: .55em;
+	height: .55em;
+	border-radius: 50%;
+	margin-right: .35em;
+	background: #16a34a;
+}
+.wcc-stock--lowstock .wcc-stock::before { background: #f59e0b; }
+.wcc-stock--onbackorder .wcc-stock::before { background: #3b82f6; }
+.wcc-stock--outofstock .wcc-stock::before { background: #dc2626; }
+.wcc-stock--outofstock .wcc-swatch { opacity: .45; }
+.wcc-cart { display: flex; gap: .4rem; align-items: center; margin: 0; justify-content: flex-end; }
+.wcc-qty { width: 4.2em; }
+.wcc-row[hidden] { display: none !important; }
+.wcc-empty { padding: 1rem 0; opacity: .7; }
+
+/* Mobile: every row becomes a card in a grid. */
+@media (max-width: 640px) {
+	.wcc-table thead { display: none; }
+	.wcc-table, .wcc-table tbody { display: block; }
+	.wcc-table tbody {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+		gap: var(--wcc-gap);
+	}
+	.wcc-table tr.wcc-row {
+		display: flex;
+		flex-direction: column;
+		border: 1px solid var(--wcc-border);
+		border-radius: .6rem;
+		overflow: hidden;
+	}
+	.wcc-table td { border: 0; padding: .2rem .6rem; }
+	.wcc-table td.wcc-col-swatch { width: auto; padding: 0; }
+	.wcc-table .wcc-swatch { width: 100%; height: 5rem; border-radius: 0; }
+	.wcc-col-name { font-weight: 600; padding-top: .5rem !important; }
+	.wcc-col-cart { padding-bottom: .6rem !important; margin-top: auto; }
+	.wcc-cart { justify-content: flex-start; }
+	.wcc-search, .wcc-search input { width: 100%; min-width: 0; }
+	.wcc-families { flex-wrap: nowrap; overflow-x: auto; padding-bottom: .25rem; }
+	.wcc-family { white-space: nowrap; }
+}

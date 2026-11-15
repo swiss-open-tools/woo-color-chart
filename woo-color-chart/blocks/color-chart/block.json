@@ -1,0 +1,21 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "woo-color-chart/color-chart",
+	"title": "Color Chart",
+	"category": "woocommerce",
+	"icon": "art",
+	"description": "Colour chart of a variable WooCommerce product with swatches, stock and add to cart.",
+	"keywords": [ "colour", "color", "farbkarte", "swatch", "variation" ],
+	"textdomain": "woo-color-chart",
+	"attributes": {
+		"productId": { "type": "number", "default": 0 },
+		"sort": { "type": "string", "default": "hue", "enum": [ "hue", "name", "sku", "menu" ] },
+		"showFilter": { "type": "boolean", "default": true },
+		"showSearch": { "type": "boolean", "default": true },
+		"showStock": { "type": "boolean", "default": true }
+	},
+	"supports": { "html": false, "align": [ "wide", "full" ] },
+	"editorScript": "woo-color-chart-block-editor",
+	"style": "woo-color-chart"
+}

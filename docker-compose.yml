@@ -1,0 +1,66 @@
+# Demo instance: WordPress + MariaDB + WooCommerce + Color Chart plugin + sample product.
+# Usage: cp .env.example .env && (edit .env) && docker compose up -d
+# Then open ${WP_URL}/product/demo-spray-400ml/ (demo product is created automatically).
+services:
+  db:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${DB_NAME:?set DB_NAME in .env}
+      MARIADB_USER: ${DB_USER:?set DB_USER in .env}
+      MARIADB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?set DB_ROOT_PASSWORD in .env}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  wordpress:
+    image: wordpress:6-php8.3-apache
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${WP_PORT:-8080}:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - wp_data:/var/www/html
+      - ./woo-color-chart:/var/www/html/wp-content/plugins/woo-color-chart:ro
+
+  # One-shot setup: installs WordPress core, WooCommerce, activates the plugin, creates demo data.
+  setup:
+    image: wordpress:cli-php8.3
+    user: "33:33"
+    depends_on:
+      db:
+        condition: service_healthy
+      wordpress:
+        condition: service_started
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      WP_URL: ${WP_URL:-http://localhost:8080}
+      WP_TITLE: ${WP_TITLE:-Color Chart Demo}
+      WP_ADMIN_USER: ${WP_ADMIN_USER:?set WP_ADMIN_USER in .env}
+      WP_ADMIN_PASSWORD: ${WP_ADMIN_PASSWORD:?set WP_ADMIN_PASSWORD in .env}
+      WP_ADMIN_EMAIL: ${WP_ADMIN_EMAIL:?set WP_ADMIN_EMAIL in .env}
+    volumes:
+      - wp_data:/var/www/html
+      - ./woo-color-chart:/var/www/html/wp-content/plugins/woo-color-chart:ro
+      - ./demo:/demo:ro
+    entrypoint: ["sh", "/demo/setup.sh"]
+    restart: "no"
+
+volumes:
+  db_data:
+  wp_data:
